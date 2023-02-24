@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Drag and Drop l'archive du modpack</title>
+    <style type="text/css">
+        body {
+            background-color: #2d2d2d;
+            color: #fff;
+            font-family: "Minecraft", sans-serif;
+            font-size: 20px;
+            line-height: 1.5;
+        }
+        h1 {
+            margin: 50px auto;
+            text-align: center;
+            font-size: 40px;
+            text-shadow: 2px 2px #000;
+        }
+        #dropzone {
+            width: 400px;
+            height: 200px;
+            border: 2px dashed #ccc;
+            text-align: center;
+            padding: 10px;
+            margin: 50px auto;
+            background-color: #333;
+            background-image: url("https://www.minecraft.net/content/dam/minecraft/pmp-images/header/og-image-minecraft.jpg");
+            background-position: center;
+            background-size: cover;
+            color: #fff;
+            font-size: 30px;
+            font-weight: bold;
+            text-shadow: 1px 1px #000;
+            cursor: pointer;
+        }
+        #dropzone:hover {
+            background-color: #555;
+        }
+        #dropzone:active {
+            background-color: #777;
+        }
+
+        #dropzone.dragover {
+            background-color: #f0f0f0;
+        }
+
+        #dropzone .icon {
+            display: none;
+            font-size: 72px;
+        }
+
+        #dropzone.dragover .icon {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<h1>Drag and Drop un dossier</h1>
+<div id="dropzone">
+    <div class="icon">📁</div>
+    Déposez un dossier ici
+</div>
+<% if (message ) { %>
+    <div class="popup <%= message.type %>">
+        <p><%= message.text %></p>
+    </div>
+<% } %>
+<script>
+    const dropzone = document.getElementById('dropzone');
+    const popup = document.getElementById('popup');
+    const popupMessage = document.getElementById('popup-message');
+
+    // Événement de dépôt de fichier
+    dropzone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('file', files[i]);
+        }
+
+        // Requête AJAX pour télécharger le fichier
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/update/upload', true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Si le fichier a été téléchargé avec succès, affiche un message de succès
+                console.log('Fichier déposé avec succès');
+                dropzone.classList.remove('dragover');
+                dropzone.querySelector('.icon').style.display = 'none';
+                dropzone.innerHTML = 'Fichier déposé avec succès';
+            } else {
+                // Si une erreur est survenue, affiche un message d'erreur
+                console.log('Erreur lors du téléchargement du fichier');
+            }
+        };
+        xhr.send(formData);
+    });
+
+    dropzone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    });
+
+    // Événement de sortie de la zone de dépôt
+    dropzone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+    });
+
+    // Événement de fermeture de la popup
+    popup.addEventListener('click', function(e) {
+        e.preventDefault();
+        popup.style.display = 'none';
+        popup.classList.remove('error');
+        popup.classList.remove('success');
+    });
+
+</script>
+</body>
+</html>
