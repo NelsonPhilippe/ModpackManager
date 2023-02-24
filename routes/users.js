@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 
 const admin_user = {
-  username: 'admin',
-  password: 'default'
+  username: process.env.ADMIN_USERNAME,
+  password: process.env.ADMIN_PASSWORD
 }
 
 dotenv.config();
