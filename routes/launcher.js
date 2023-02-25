@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const {checkFiles} = require("../utils/mc_files");
+
+router.get('/todownload', function (req, res) {
+    const pack = req.body.pack;
+
+    const filesToDownload = checkFiles(pack);
+
+    res.status(200).json(filesToDownload);
+});
 
 router.get('/download/:filename', function(req, res) {
     const file = req.params.filename;

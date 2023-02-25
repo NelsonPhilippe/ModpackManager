@@ -57,16 +57,25 @@ module.exports = {
         const data = JSON.stringify(fs.readFileSync('pack.json'));
         const originalChecksum = [];
         const userChecksum = [];
+        const toDownload = [];
 
         for(let originalPack of data){
             const checkSum = originalPack.hash;
-            originalChecksum.push(checkSum);
+            originalChecksum.push(originalPack);
         }
 
         for(let userPack of packData){
             const checksum = userPack.hash;
-            userChecksum.push(checksum);
+            userChecksum.push(userPack);
         }
+
+        originalChecksum.forEach(element => {
+            if(!userChecksum.includes(element)){
+                toDownload.push(element.path);
+            }
+        });
+
+        return toDownload;
 
     }
 }
