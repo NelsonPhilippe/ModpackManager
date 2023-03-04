@@ -2,12 +2,32 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const {checkFiles} = require("../utils/mc_files");
+const fs = require("fs");
 
-router.get('/todownload', function (req, res) {
-    const pack = req.body.pack;
 
-    const filesToDownload = checkFiles(pack);
+router.get('/request/modpack', async function (req, res) {
+    const packData = await fs.promises.readFile('pack.json');
+    const packList = JSON.parse(packData.toString());
 
+    console.log(packList);
+
+    res.status(200).json(packList);
+});
+
+router.post('/todownload', async function  (req, res) {
+    const pack = req.body;
+
+    console.log(pack)
+
+    if (pack.length === 0){
+        const packData = await fs.promises.readFile('pack.json');
+        const packList = JSON.parse(packData.toString());
+        res.status(200).json(packList)
+        return
+    }
+
+    const filesToDownload = await checkFiles(pack);
+    console.log(filesToDownload)
     res.status(200).json(filesToDownload);
 });
 

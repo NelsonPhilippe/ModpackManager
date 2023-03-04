@@ -37,7 +37,9 @@ module.exports = {
             }
 
             for (const path of path_file) {
-                data.push(await data_format(path))
+                if(!path.includes('modpack.zip')){
+                    data.push(await data_format(path));
+                }
             }
 
             let json_data = JSON.stringify(data)
