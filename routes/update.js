@@ -17,8 +17,8 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     fileFilter: function (req, file, cb) {
-        const allowedMimeTypes = ['application/zip', 'application/x-zip-compressed'];
-        if (allowedMimeTypes.includes(mime.lookup('modpack.zip'))){
+        const allowedMimeTypes = ['application/zip', 'application/x-zip-compressed', 'application/x-rar-compressed'];
+        if (allowedMimeTypes.includes(mime.lookup(file.originalname))){
             cb(null, true);
         } else {
             cb(new Error('Le fichier doit être un fichier ZIP'));

@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const md5File = require("md5-file");
 const AdmZip = require('adm-zip');
+const unrar = require('unrar');
 
 
 module.exports = {
@@ -24,8 +25,7 @@ module.exports = {
                 }
             });
 
-            const zip = new AdmZip('minecraft/modpack.zip');
-            zip.extractAllTo('minecraft', true);
+            extractPack('minecraft')
 
             const path_file = walkDir("minecraft")
 
@@ -80,6 +80,12 @@ module.exports = {
         return toDownload;
 
     }
+}
+
+const extractPack = (dirPath) => {
+
+    const zip = new AdmZip('minecraft/modpack.zip');
+    zip.extractAllTo('minecraft', true);
 }
 
 const walkDir = (dir) => {
