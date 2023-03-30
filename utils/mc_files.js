@@ -1,12 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 const md5File = require("md5-file");
-const AdmZip = require('adm-zip');
-const unrar = require('unrar');
+const zip = require('./zip.js');
 
 
 module.exports = {
-    updateModpack: async () => {
+    updateModpack: async (extensions) => {
+
+        console.log('test')
 
         fs.readdir('minecraft', async (err, files) => {
             if (err) {
@@ -14,7 +15,7 @@ module.exports = {
             }
 
             files.forEach((file) => {
-                if (file !== 'pack.json' && file !== 'modpack.zip') {
+                if (file !== 'pack.json' && file !== 'modpack.zip' && file !== 'modpack.rar') {
                     fs.unlink(`minecraft/${file}`, err => {
                         if (err) {
                             console.error(`Erreur lors de la suppression du fichier ${file}`, err);
@@ -25,7 +26,8 @@ module.exports = {
                 }
             });
 
-            extractPack('minecraft')
+            await zip.extractFile('minecraft', 'modpack.' + extensions);
+
 
             const path_file = walkDir("minecraft")
 
@@ -82,11 +84,6 @@ module.exports = {
     }
 }
 
-const extractPack = (dirPath) => {
-
-    const zip = new AdmZip('minecraft/modpack.zip');
-    zip.extractAllTo('minecraft', true);
-}
 
 const walkDir = (dir) => {
 

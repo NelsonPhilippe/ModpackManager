@@ -84,6 +84,7 @@
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/update/upload', true);
         xhr.onload = function() {
+            console.log(xhr.status);
             if (xhr.status === 200) {
                 // Si le fichier a été téléchargé avec succès, affiche un message de succès
                 console.log('Fichier déposé avec succès');
@@ -92,6 +93,7 @@
                 dropzone.innerHTML = 'Fichier déposé avec succès';
             } else {
                 // Si une erreur est survenue, affiche un message d'erreur
+                dropzone.innerHTML = 'Erreur lors du téléchargement du fichier'
                 console.log('Erreur lors du téléchargement du fichier');
             }
         };

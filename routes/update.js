@@ -10,19 +10,30 @@ const storage = multer.diskStorage({
         cb(null, 'minecraft/');
     },
     filename: function (req, file, cb) {
-        cb(null, 'modpack.zip');
+
+
+        if(file.originalname.endsWith('.zip')){
+            cb(null, 'modpack.zip');
+        }
+        if(file.originalname.endsWith('.rar')){
+            cb(null, 'modpack.rar');
+        }
     }
 });
 
 const upload = multer({
     storage: storage,
     fileFilter: function (req, file, cb) {
-        const allowedMimeTypes = ['application/zip', 'application/x-zip-compressed', 'application/x-rar-compressed'];
+        const allowedMimeTypes = ['application/zip', 'application/x-zip-compressed', 'application/gzip'];
         if (allowedMimeTypes.includes(mime.lookup(file.originalname))){
             cb(null, true);
         } else {
             cb(new Error('Le fichier doit être un fichier ZIP'));
         }
+    },
+    limit: {
+        files: 1,
+        fileSize: 5000 * 1024 * 1024
     }
 });
 
@@ -32,8 +43,10 @@ router.get('/', middleware,(req, res) => {
 });
 
 // Route pour recevoir les fichiers déposés
-router.post('/upload', middleware, upload.array('file'), (req, res) => {
-    updateModpack()
+router.post('/upload', middleware, upload.single('file'), (req, res) => {
+    // req.file.originalname.endWith('.zip') ? updateModpack('zip') : updateModpack('rar');
+    console.log(req.file.originalname)
+    updateModpack('zip')
     res.render('update', { message: { type: 'success', text: 'Fichiers déposés avec succès' } });
 });
 
