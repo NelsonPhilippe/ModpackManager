@@ -1,8 +1,10 @@
 const AdmZip = require("adm-zip");
-const {createExtractorFromFile} = require("node-unrar-js");
+const {createExtractorFromFile, Unrar} = require("node-unrar-js");
+const fs = require("fs");
 async function extractFile(dirPath, file){
 
     if(file.toString().endsWith('.zip')){
+        console.log(file)
         const zip = new AdmZip(dirPath + '/' + file);
         zip.extractAllTo(dirPath, true);
         return;
@@ -11,12 +13,13 @@ async function extractFile(dirPath, file){
     if(file.toString().endsWith('.rar')){
 
         const extractor = await createExtractorFromFile({
-            filepath: dirPath + file,
-            targetPath: dirPath
+            filepath: dirPath + '/' + file,
+            targetPath: dirPath,
         });
-        const zip = new AdmZip(dirPath + '/' + file);
-        zip.extractAllTo(dirPath, true);
-        [...extractor.extract().files];
+        const extracted = extractor.extract();
+        [...extracted.files];
+
+
         return;
     }
 

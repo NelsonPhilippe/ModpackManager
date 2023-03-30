@@ -2,11 +2,9 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
+const fs = require('fs');
 
-const admin_user = {
-  username: process.env.ADMIN_USERNAME,
-  password: process.env.ADMIN_PASSWORD
-}
+
 
 dotenv.config();
 const secret_token = process.env.TOKEN;
@@ -20,8 +18,10 @@ router.post('/auth', async(req, res) => {
 
     console.log(req.body)
   const {email, password} = req.body;
-
-  const user = admin_user;
+    const user = {
+      username: process.env.ADMIN_USERNAME,
+      password: process.env.ADMIN_PASSWORD
+  };
 
 
   if(user.password === password && user.username === email){
@@ -32,4 +32,16 @@ router.post('/auth', async(req, res) => {
   }
 })
 
+router.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    res.status(200).json({message: 'Logged out'})
+});
+
+router.post('/update', (req, res) => {
+    const {username, password} = req.body;
+
+    fs.writeFileSync('.env', `ADMIN_USERNAME=${username}\nADMIN_PASSWORD=${password}\nTOKEN=${process.env.TOKEN}`);
+
+    res.status(200).json({message: 'Updated'})
+});
 module.exports = router;

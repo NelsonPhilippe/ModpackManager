@@ -25,6 +25,7 @@
     "node-unrar-js": "^2.0.0",
     "nodemon": "^2.0.19",
     "pug": "2.0.0-beta11",
+    "rimraf": "^4.4.1",
     "swig": "^1.4.2",
     "unrar": "^0.2.0"
   }

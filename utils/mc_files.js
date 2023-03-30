@@ -2,12 +2,11 @@ const fs = require("fs");
 const path = require("path");
 const md5File = require("md5-file");
 const zip = require('./zip.js');
+const rimraf = require('rimraf')
 
 
 module.exports = {
     updateModpack: async (extensions) => {
-
-        console.log('test')
 
         fs.readdir('minecraft', async (err, files) => {
             if (err) {
@@ -15,14 +14,19 @@ module.exports = {
             }
 
             files.forEach((file) => {
-                if (file !== 'pack.json' && file !== 'modpack.zip' && file !== 'modpack.rar') {
-                    fs.unlink(`minecraft/${file}`, err => {
-                        if (err) {
-                            console.error(`Erreur lors de la suppression du fichier ${file}`, err);
-                        } else {
-                            console.log(`Fichier ${file} supprimé avec succès`);
-                        }
-                    });
+
+                if(file === 'modpack.zip' || file === 'modpack.rar'){
+                    return;
+                }
+
+                try {
+                    if(fs.statSync('minecraft/' + file).isDirectory()) {
+                        rimraf.sync('minecraft/' + file);
+                    }else {
+                        fs.unlinkSync('minecraft/' + file);
+                    }
+                }catch (e) {
+                    console.log(e)
                 }
             });
 
@@ -45,7 +49,7 @@ module.exports = {
             }
 
             let json_data = JSON.stringify(data)
-            console.log(json_data)
+            // console.log(json_data)
 
             fs.writeFileSync('pack.json', json_data, 'utf8')
         });
