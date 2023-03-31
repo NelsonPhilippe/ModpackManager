@@ -1,5 +1,6 @@
 const dropzone = document.getElementById('dropzone');
 const popupMessage = document.getElementById('success-message');
+const fileInput = document.getElementById('file-upload');
 
 dropzone.addEventListener('drop', function(e) {
     e.preventDefault();
@@ -10,6 +11,31 @@ dropzone.addEventListener('drop', function(e) {
     }
 
     // Requête AJAX pour télécharger le fichier
+    sendFile(formData);
+});
+
+dropzone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+});
+
+// Événement de sortie de la zone de dépôt
+dropzone.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+});
+
+fileInput.addEventListener('change', function() {
+    // Récupérer le fichier sélectionné
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    sendFile(formData);
+})
+
+
+function sendFile(formData) {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/update/upload', true);
     xhr.onload = function() {
@@ -28,15 +54,4 @@ dropzone.addEventListener('drop', function(e) {
         }
     };
     xhr.send(formData);
-});
-
-dropzone.addEventListener('dragover', function(e) {
-    e.preventDefault();
-    dropzone.classList.add('dragover');
-});
-
-// Événement de sortie de la zone de dépôt
-dropzone.addEventListener('dragleave', function(e) {
-    e.preventDefault();
-    dropzone.classList.remove('dragover');
-});
+}
