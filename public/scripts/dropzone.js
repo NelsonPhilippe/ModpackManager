@@ -1,6 +1,7 @@
 const dropzone = document.getElementById('dropzone');
 const popupMessage = document.getElementById('success-message');
 const fileInput = document.getElementById('file-upload');
+const progress = document.getElementById('progress');
 
 dropzone.addEventListener('drop', function(e) {
     e.preventDefault();
@@ -38,6 +39,13 @@ fileInput.addEventListener('change', function() {
 function sendFile(formData) {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/update/upload', true);
+    xhr.upload.onprogress = function(event) {
+        if (event.lengthComputable) {
+            const percentComplete = (event.loaded / event.total) * 100;
+            progress.style.width = percentComplete.toFixed(0) + '%';
+            console.log(percentComplete.toFixed(0) + '%');
+        }
+    };
     xhr.onload = function() {
         console.log(xhr.status);
         if (xhr.status === 200) {
